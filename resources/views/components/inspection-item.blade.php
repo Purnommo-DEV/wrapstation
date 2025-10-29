@@ -14,9 +14,6 @@
             </div>
             <span class="fw-semibold ms-2">{{ $title }}</span>
         </div>
-        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="toggleDetails('{{ $field }}')">
-            Edit
-        </button>
     </div>
 
     <!-- Hidden Condition (kosong di awal) -->

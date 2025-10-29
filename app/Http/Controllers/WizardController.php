@@ -21,8 +21,8 @@ class WizardController extends Controller
         // dd($request->all(), $request->files->all());
 
         $ws = WrapStation::create($request->only([
-            'customer_front_name', 'customer_last_name', 'customer_phone',
-            'car_brand', 'car_model', 'color', 'year', 'license_plate', 'inspection_date'
+            'location', 'customer_front_name', 'customer_last_name', 'customer_phone',
+            'car_brand', 'car_model', 'color', 'year', 'license_plate', 'inspection_date', 'mileage'
         ]));
         $ws->terms_agreed = true;
 

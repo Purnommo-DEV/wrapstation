@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('wrap_stations', function (Blueprint $table) {
             $table->id();
+            $table->string('location');
             $table->string('customer_front_name');
             $table->string('customer_last_name');
             $table->string('customer_phone');
@@ -22,6 +23,7 @@ return new class extends Migration
             $table->integer('year');
             $table->string('license_plate');
             $table->date('inspection_date');
+            $table->integer('mileage');
             $table->string('signature_path')->nullable();
             $table->boolean('terms_agreed')->default(false);
             $table->timestamps();

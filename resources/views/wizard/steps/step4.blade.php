@@ -1,39 +1,51 @@
-<div class="card border-0">
-    <div class="card-header bg-white">
-        <h5 class="mb-0 text-primary">Syarat & Ketentuan</h5>
+<div class="card card-modern">
+    <div class="card-header">
+        <h5 class="mb-0 fw-semibold"><i class="bi bi-file-text me-2"></i> Syarat & Ketentuan</h5>
     </div>
     <div class="card-body">
         <!-- Syarat & Ketentuan -->
-        <div class="border p-3 mb-3 rounded" style="height:180px; overflow:auto; background:#f8f9fa; font-size:0.9rem;">
-            <ol class="mb-0">
-                <li>Kondisi kendaraan dapat berubah setelah pembersihan dan proses wrapping.</li>
-                <li>Wrap Station tidak bertanggung jawab atas kerusakan yang terjadi akibat kondisi awal kendaraan.</li>
-                <li>Pelanggan wajib menandatangani form ini sebagai persetujuan.</li>
-                <!-- ... tambahkan 7 poin lagi jika perlu -->
+        <div class="border p-3 mb-4 rounded-3" 
+             style="height: 230px; overflow-y: auto; background: #f8f9fa; font-size: 0.9rem; line-height: 1.6;">
+            <ol class="mb-0 ps-3">
+                <li>Kondisi kendaraan dapat berubah setelah pembersihan. Tim akan menginformasikan jika ada perubahan.</li>
+                <li>Status cat kendaraan (repaint/original) tidak dapat dipastikan, risiko ditanggung pemilik.</li>
+                <li>Penambahan jarak tempuh (mileage) bisa terjadi, dan bukan tanggung jawab Wrap Station.</li>
+                <li>Kerusakan/malfungsi mesin selama atau setelah pengerjaan bukan tanggung jawab kami.</li>
+                <li>Kerusakan akibat pembongkaran aksesoris oleh pihak lain bukan tanggung jawab kami.</li>
+                <li>Kehilangan barang pribadi bukan tanggung jawab Wrap Station. Harap kosongkan kendaraan.</li>
+                <li>Wrap Station berhak melakukan tindakan teknis bila diperlukan dan disetujui sebelumnya.</li>
+                <li>Kondisi/modifikasi khusus yang tidak diinformasikan menjadi tanggung jawab pemilik.</li>
+                <li>Penurunan baterai EV adalah kondisi alami, bukan tanggung jawab kami.</li>
+                <li>Estimasi pengerjaan dapat berubah, keterlambatan akan diinformasikan ke pelanggan.</li>
             </ol>
         </div>
 
         <!-- Checkbox Persetujuan -->
-        <div class="form-check mb-3">
+        <div class="form-check mb-4">
             <input class="form-check-input" type="checkbox" id="agree" required>
-            <label class="form-check-label" for="agree">Saya telah membaca dan menyetujui syarat & ketentuan di atas</label>
+            <label class="form-check-label" for="agree">
+                Saya telah membaca dan menyetujui syarat & ketentuan di atas
+            </label>
         </div>
 
         <!-- Signature Area -->
-        <div class="mb-3">
+        <div class="mb-4">
             <label class="form-label fw-bold">Tanda Tangan</label>
-            <div class="signature-container border rounded bg-white p-2 shadow-sm">
-                <canvas id="signatureCanvas" class="border rounded"></canvas>
-            </div>
-            <div class="mt-2 text-end">
-                <button type="button" class="btn btn-sm btn-outline-danger" onclick="clearSignature()">Hapus</button>
+            <div class="d-flex flex-column align-items-start">
+                <div class="signature-container border rounded-3 bg-white shadow-sm mb-2">
+                    <canvas id="signatureCanvas" class="border rounded-3"></canvas>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-danger" onclick="clearSignature()">
+                    <i class="bi bi-trash3"></i> Hapus
+                </button>
             </div>
         </div>
 
         <!-- Submit Button -->
-        <div class="text-center mt-4">
-            <button type="button" class="btn btn-success btn-lg px-5" onclick="handleFinalSubmit()">
-                Submit Formulir
+        <div class="text-center">
+            <button type="button" class="btn btn-success px-5 py-2 rounded-pill shadow-sm"
+                    onclick="handleFinalSubmit()">
+                <i class="bi bi-send-check"></i> Submit
             </button>
         </div>
     </div>
@@ -43,160 +55,71 @@
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 <script>
 
-function dataURLtoBlob(dataurl) {
-    const arr = dataurl.split(',');
-    const mime = arr[0].match(/:(.*?);/)[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) u8arr[n] = bstr.charCodeAt(n);
-    return new Blob([u8arr], { type: mime });
-}
-
 let signaturePad;
 let canvas;
 
-// Inisialisasi saat halaman dimuat
-window.addEventListener('load', function() {
-    canvas = document.getElementById('signatureCanvas');
-    const container = canvas.parentElement;
-
-    // Atur ukuran canvas sesuai container
-    function resizeCanvas() {
-        const ratio = Math.max(window.devicePixelRatio || 1, 1);
-        canvas.width = container.offsetWidth * ratio;
-        canvas.height = 150 * ratio; // Tinggi tetap 150px
-        canvas.getContext('2d').scale(ratio, ratio);
-        signaturePad?.clear();
+    function dataURLtoBlob(dataurl) {
+        const arr = dataurl.split(',');
+        const mime = arr[0].match(/:(.*?);/)[1];
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) u8arr[n] = bstr.charCodeAt(n);
+        return new Blob([u8arr], { type: mime });
     }
 
-    // Buat SignaturePad
-    signaturePad = new SignaturePad(canvas, {
-        backgroundColor: 'rgb(255, 255, 255)',
-        penColor: 'rgb(0, 0, 0)'
-    });
+    window.addEventListener('DOMContentLoaded', () => {
+        canvas = document.getElementById('signatureCanvas');
+        const container = canvas.parentElement;
 
-    // Resize saat load & resize window
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-});
-
-// Hapus tanda tangan
-function clearSignature() {
-    signaturePad.clear();
-}
-
-// Submit Final
-async function finalSubmit() {
-    if (!document.getElementById('agree').checked) {
-        showError('Harap centang persetujuan');
-        return;
-    }
-    if (signaturePad.isEmpty()) {
-        showError('Silakan tanda tangan');
-        return;
-    }
-
-    const formData = new FormData();
-
-    // === STEP 1 ===
-    const step1 = JSON.parse(localStorage.getItem('step1') || '{}');
-    Object.keys(step1).forEach(k => formData.append(k, step1[k]));
-
-    // === STEP 2: Teks + Gambar ===
-    const step2 = JSON.parse(localStorage.getItem('step2') || '{}');
-    const fields = [
-        'paint', 'glass_windshield', 'glass_windows', 'glass_mirrors',
-        'glass_rear_window', 'tires_tires', 'tires_wheels'
-    ];
-
-    const imagePromises = [];
-
-    fields.forEach(field => {
-        // Teks
-        if (step2[`${field}_condition`]) formData.append(`${field}_condition`, step2[`${field}_condition`]);
-        if (step2[`${field}_note`]) formData.append(`${field}_note`, step2[`${field}_note`]);
-
-        // Gambar
-        const blobKey = `${field}_image_blob`;
-        const nameKey = `${field}_image_name`;
-        const typeKey = `${field}_image_type`;
-
-        if (step2[blobKey] && step2[nameKey]) {
-            const promise = fetch(step2[blobKey])
-                .then(res => res.blob())
-                .then(blob => {
-                    const file = new File([blob], step2[nameKey], { type: step2[typeKey] });
-                    formData.append(`${field}_image`, file);
-                })
-                .catch(err => console.error(`Gagal load ${field}:`, err));
-            imagePromises.push(promise);
+        function resizeCanvas() {
+            const ratio = Math.max(window.devicePixelRatio || 1, 1);
+            const size = 270; // persegi 200px
+            canvas.width = size * ratio;
+            canvas.height = size * ratio;
+            const ctx = canvas.getContext('2d');
+            ctx.scale(ratio, ratio);
+            canvas.style.width = size + 'px';
+            canvas.style.height = size + 'px';
+            signaturePad?.clear();
         }
-    });
 
-    // === STEP 3: Foto 4 Posisi ===
-    const step3 = JSON.parse(localStorage.getItem('step3') || '{}');
-    const positions = ['front', 'rear', 'left', 'right'];
-    positions.forEach(pos => {
-        const blobKey = `${pos}_photo_blob`;
-        const nameKey = `${pos}_photo_name`;
-        const typeKey = `${pos}_photo_type`;
+        // Tambahkan delay agar ukuran layout sudah fix sebelum resizeCanvas dipanggil
+        setTimeout(() => {
+            resizeCanvas();
+            signaturePad = new SignaturePad(canvas, {
+                backgroundColor: 'rgb(255, 255, 255)',
+                penColor: 'rgb(0, 0, 0)'
+            });
+        }, 200);
 
-        if (step3[blobKey] && step3[nameKey]) {
-            const promise = fetch(step3[blobKey])
-                .then(res => res.blob())
-                .then(blob => {
-                    const file = new File([blob], step3[nameKey], { type: step3[typeKey] });
-                    formData.append(`${pos}_photo`, file);
-                });
-            imagePromises.push(promise);
-        }
-    });
-
-    // === TUNGGU SEMUA FILE SELESAI ===
-    try {
-        await Promise.all(imagePromises);
-        formData.append('signature', signaturePad.toDataURL());
-
-        // === SUBMIT ===
-        const response = await fetch('{{ route("wizard.store") }}', {
-            method: 'POST',
-            body: formData,
-            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+        window.addEventListener('resize', () => {
+            resizeCanvas();
         });
+    });
 
-        if (!response.ok) throw new Error('Server error: ' + response.status);
-
-        const res = await response.json();
-        localStorage.clear();
-        window.location.href = '/report/' + res.id;
-
-    } catch (err) {
-        console.error('Submit error:', err);
-        showError('Gagal submit. Cek console untuk detail.');
+    function clearSignature() {
+        signaturePad.clear();
     }
-}
-
-// === PANGGIL DENGAN HANDLER ===
-function handleFinalSubmit() {
-    finalSubmit(); // async akan ditunggu
-}
 
 </script>
 
 <style>
-.signature-container {
-    width: 100%;
-    max-width: 100%;
-    overflow: hidden;
-}
-#signatureCanvas {
-    width: 100%;
-    height: 150px;
-    touch-action: none; /* Penting untuk mobile */
-}
-.form-check-input:checked {
-    background-color: #198754;
-    border-color: #198754;
-}
+    .signature-container {
+        width: 270px;
+        height: 270px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+    #signatureCanvas {
+        width: 100%;
+        height: 100%;
+        cursor: crosshair;
+        touch-action: none;
+    }
+    .btn i {
+        vertical-align: middle;
+    }
 </style>
