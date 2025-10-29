@@ -1,0 +1,8 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+body { background: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
+.nav-tabs .nav-link { font-weight: bold; }
+.tab-content { min-height: 500px; }
+.is-invalid { border-color: #dc3545 !important; }
+.photo-point { width: 90px; height: 90px; border: 3px dashed #ccc; border-radius: 50%; background: rgba(255,255,255,0.9); cursor: pointer; }
+.photo-point:hover { border-color: #0d6efd; }
+.photo-point img { max-width: 100%; max-height: 100%; border-radius: 50%; object-fit: cover; }
