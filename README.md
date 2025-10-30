@@ -14,11 +14,11 @@ Sistem **Inspection Report** untuk **Wrap Station** – Generate PDF otomatis de
 ## Cara Menjalankan Proyek
 
 ### 1. Clone & Install
-git clone https://github.com/Purnommo-DEV/wrapstation.git
-cd wrapstation
-composer install
-cp .env.example .env
-php artisan key:generate
+| git clone https://github.com/Purnommo-DEV/wrapstation.git |
+| cd wrapstation |
+| composer install |
+| cp .env.example .env |
+| php artisan key:generate |
 
 ### 2. Setup Database
 php artisan migrate
