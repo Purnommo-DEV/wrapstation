@@ -1,6 +1,6 @@
 <div class="card card-modern">
     <div class="card-header">
-        <h5 class="mb-0 fw-semibold">📸 Foto 4 Posisi Kendaraan</h5>
+        <h5 class="mb-0 fw-semibold">Foto 4 Posisi Kendaraan</h5>
     </div>
 
     <div class="card-body text-center position-relative bg-light" style="min-height: 500px;">
@@ -9,10 +9,10 @@
              class="img-fluid opacity-75">
 
         <!-- 4 Posisi -->
-        <x-photo-point top="18%" left="50%" transform="translateX(-50%)" label="Depan" field="front" />
-        <x-photo-point top="82%" left="50%" transform="translateX(-50%)" label="Belakang" field="rear" />
-        <x-photo-point top="50%" left="8%" transform="translateY(-50%)" label="Kiri" field="left" />
-        <x-photo-point top="50%" right="8%" transform="translateY(-50%)" label="Kanan" field="right" />
+        <x-photo-point top="18%" left="50%" transform="translateX(-50%)" label="Kanan" field="front" />
+        <x-photo-point top="82%" left="50%" transform="translateX(-50%)" label="Kiri" field="rear" />
+        <x-photo-point top="50%" left="8%" transform="translateY(-50%)" label="Belakang" field="left" />
+        <x-photo-point top="50%" right="8%" transform="translateY(-50%)" label="Depan" field="right" />
     </div>
 </div>
 

@@ -1,6 +1,6 @@
 <div class="card card-modern">
     <div class="card-header">
-        <h5 class="mb-0 fw-semibold">🚗 Inspeksi Kendaraan</h5>
+        <h5 class="mb-0 fw-semibold">Inspeksi Kendaraan</h5>
     </div>
 
     <div class="card-body p-4">
@@ -122,7 +122,6 @@
         reader.onload = e => {
             const preview = input.closest('.detail-form').querySelector('.image-preview');
             preview.innerHTML = `<img src="${e.target.result}" class="img-fluid rounded" style="max-height:120px;">`;
-            // Simpan sebagai BLOB
             saveInspectionItem(field, file, e.target.result);
         };
         reader.readAsDataURL(file);

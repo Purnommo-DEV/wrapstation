@@ -1,6 +1,6 @@
 <div class="card card-modern">
     <div class="card-header">
-        <h5 class="mb-0 fw-semibold"><i class="bi bi-file-text me-2"></i> Syarat & Ketentuan</h5>
+        <h5 class="mb-0 fw-semibold"><i class="bi bi-file-text me-2"></i>Syarat & Ketentuan</h5>
     </div>
     <div class="card-body">
         <!-- Syarat & Ketentuan -->
@@ -84,7 +84,6 @@ let canvas;
             signaturePad?.clear();
         }
 
-        // Tambahkan delay agar ukuran layout sudah fix sebelum resizeCanvas dipanggil
         setTimeout(() => {
             resizeCanvas();
             signaturePad = new SignaturePad(canvas, {
@@ -101,6 +100,135 @@ let canvas;
     function clearSignature() {
         signaturePad.clear();
     }
+
+    // Submit Final
+    async function finalSubmit() {
+        if (!document.getElementById('agree').checked) {
+            showError('Harap centang persetujuan');
+            return;
+        }
+        if (signaturePad.isEmpty()) {
+            showError('Silakan tanda tangan');
+            return;
+        }
+
+        const formData = new FormData();
+
+        // === STEP 1 ===
+        const step1 = JSON.parse(localStorage.getItem('step1') || '{}');
+        Object.keys(step1).forEach(k => formData.append(k, step1[k]));
+
+        // === STEP 2 ===
+        const step2 = JSON.parse(localStorage.getItem('step2') || '{}');
+        const fields = [
+            'paint', 'glass_windshield', 'glass_windows', 'glass_mirrors',
+            'glass_rear_window', 'tires_tires', 'tires_wheels'
+        ];
+
+        const imagePromises = [];
+
+        fields.forEach(field => {
+            if (step2[`${field}_condition`]) formData.append(`${field}_condition`, step2[`${field}_condition`]);
+            if (step2[`${field}_note`]) formData.append(`${field}_note`, step2[`${field}_note`]);
+
+            const blobKey = `${field}_image_blob`;
+            const nameKey = `${field}_image_name`;
+            const typeKey = `${field}_image_type`;
+
+            if (step2[blobKey] && step2[nameKey]) {
+                const promise = fetch(step2[blobKey])
+                    .then(res => res.blob())
+                    .then(blob => {
+                        const file = new File([blob], step2[nameKey], { type: step2[typeKey] });
+                        formData.append(`${field}_image`, file);
+                    })
+                    .catch(err => console.error(`Gagal load ${field}:`, err));
+                imagePromises.push(promise);
+            }
+        });
+
+        // === STEP 3 ===
+        const step3 = JSON.parse(localStorage.getItem('step3') || '{}');
+        const positions = ['front', 'rear', 'left', 'right'];
+        positions.forEach(pos => {
+            const blobKey = `${pos}_photo_blob`;
+            const nameKey = `${pos}_photo_name`;
+            const typeKey = `${pos}_photo_type`;
+
+            if (step3[blobKey] && step3[nameKey]) {
+                const promise = fetch(step3[blobKey])
+                    .then(res => res.blob())
+                    .then(blob => {
+                        const file = new File([blob], step3[nameKey], { type: step3[typeKey] });
+                        formData.append(`${pos}_photo`, file);
+                    });
+                imagePromises.push(promise);
+            }
+        });
+
+        try {
+            await Promise.all(imagePromises);
+            formData.append('signature', signaturePad.toDataURL());
+
+            Swal.fire({
+                title: 'Processing Data...',
+                text: 'Mohon tunggu sebentar, data sedang dikirim ke server.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // === SUBMIT ===
+            const response = await fetch('{{ route("wizard.store") }}', {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+            });
+
+            if (!response.ok) throw new Error('Server error: ' + response.status);
+
+            const res = await response.json();
+            localStorage.clear();
+            Swal.close();
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: 'Data berhasil dikirim.',
+                confirmButtonColor: '#28a745'
+            }).then(() => {
+                window.location.href = '/report/' + res.id + '/download';
+                
+                // setTimeout(() => {
+                //     window.location.href = '/wizard';
+                // }, 1000);
+            });
+
+        } catch (err) {
+            console.error('Submit error:', err);
+            Swal.close();
+            showError('Gagal submit. Cek console untuk detail.');
+        }
+    }
+
+    function handleFinalSubmit() {
+        Swal.fire({
+            title: 'Yakin submit data?',
+            text: 'Pastikan semua data sudah benar sebelum dikirim.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, submit!',
+            cancelButtonText: 'Batal',
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#d33'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                finalSubmit();
+            }
+        });
+    }
+
 
 </script>
 

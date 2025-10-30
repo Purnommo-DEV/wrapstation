@@ -25,6 +25,7 @@ return new class extends Migration
             $table->date('inspection_date');
             $table->integer('mileage');
             $table->string('signature_path')->nullable();
+            $table->string('pdf_path')->nullable();
             $table->boolean('terms_agreed')->default(false);
             $table->timestamps();
         });

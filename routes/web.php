@@ -19,3 +19,5 @@ Route::get('/', function () {
 
 Route::get('/wizard', [WizardController::class, 'index'])->name('wizard');
 Route::post('/wizard', [WizardController::class, 'store'])->name('wizard.store');
+// Route::get('/report/{id}', [WizardController::class, 'showReport'])->name('report.show');
+Route::get('/report/{id}/download', [WizardController::class, 'downloadPdf'])->name('report.download');

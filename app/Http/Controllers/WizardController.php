@@ -7,6 +7,8 @@ use App\Models\InspectionItem;
 use App\Models\WrapStationPhoto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Str;
 
 class WizardController extends Controller
 {
@@ -17,7 +19,6 @@ class WizardController extends Controller
 
     public function store(Request $request)
     {
-        // DEBUG: LIHAT SEMUA DATA MASUK
         // dd($request->all(), $request->files->all());
 
         $ws = WrapStation::create($request->only([
@@ -78,6 +79,44 @@ class WizardController extends Controller
         }
 
         $ws->save();
-        return response()->json(['id' => $ws->id]);
+
+        $pdf = Pdf::loadView('pdf.report', [
+            'ws' => $ws,
+            'items' => $ws->inspections,
+            'photos' => $ws->photos
+        ])->setPaper('a4', 'portrait');
+
+        $pdfPath = 'reports/' . $ws->id . '.pdf';
+        Storage::disk('public')->put($pdfPath, $pdf->output());
+        $ws->pdf_path = $pdfPath;
+        $ws->save();
+
+        return response()->json([
+            'id' => $ws->id,
+            'pdf_url' => Storage::url($pdfPath)
+        ]);
+    }
+
+    // public function showReport($id)
+    // {
+    //     $ws = WrapStation::with(['inspections', 'photos'])->findOrFail($id);
+    //     return view('pdf.report', [
+    //         'ws' => $ws,
+    //         'items' => $ws->inspections,
+    //         'photos' => $ws->photos
+    //     ]);
+    // }
+
+    public function downloadPdf($id)
+    {
+        $ws = WrapStation::with(['inspections', 'photos'])->findOrFail($id);
+
+        $pdf = Pdf::loadView('pdf.report', compact('ws'))
+                  ->setPaper('a4', 'portrait')
+                  ->setOptions(['isRemoteEnabled' => true]);
+
+        $filename = 'Inspection_Report_WS' . $ws->id . '_' . now()->format('Ymd') . '.pdf';
+
+        return $pdf->download($filename);
     }
 }
