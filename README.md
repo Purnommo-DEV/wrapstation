@@ -1,8 +1,7 @@
 # Wrap Station Inspection Report
 Sistem **Inspection Report** untuk **Wrap Station** – Generate PDF otomatis dengan foto mobil, checklist kondisi, dan tanda tangan digital.
 
-## Prasyarat (WAJIB!)
-> **Project ini menggunakan Laravel ^8.1**  
+## Prasyarat (WAJIB!) 
 > Pastikan Anda menggunakan:
 - PHP >= 8.1
 - Composer
