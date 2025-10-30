@@ -8,6 +8,8 @@ Sistem **Inspection Report** untuk **Wrap Station** – Generate PDF otomatis de
 - Node.js & NPM (untuk Vite)
 - MySQL
 
+Link Demo : https://drive.google.com/file/d/1WI09kshcCHzH2B-CLTu4OYB2x5CuSDEx/view?usp=sharing
+
 ## Teknologi yang Digunakan
 | Komponen | Teknologi |
 |--------|----------|
